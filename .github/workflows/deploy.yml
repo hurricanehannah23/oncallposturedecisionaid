@@ -1,11 +1,11 @@
-name: Refresh data and deploy
+name: Update data and deploy dashboard
 
 on:
+  schedule:
+    - cron: "*/5 * * * *"     # every 5 minutes (GitHub may start it a few minutes late)
   push:
     branches: [main]
-  schedule:
-    - cron: "7,37 * * * *"   # every 30 min (GitHub may run scheduled jobs late)
-  workflow_dispatch:          # lets cron-job.org (or the Actions tab) trigger a refresh
+  workflow_dispatch:           # adds a "Run workflow" button on the Actions tab
 
 permissions:
   contents: read
@@ -14,34 +14,40 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
+      - id: pages
+        uses: actions/configure-pages@v5
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Fetch NWS, SPC and NHC data
-        run: python scripts/fetch_data.py _site/data
+      - run: pip install requests
 
-      - name: Add the page
+      - name: Collect observations
+        env:
+          PAGES_URL: ${{ steps.pages.outputs.base_url }}
+        run: python scripts/collect.py site
+
+      - name: Add the dashboard
         run: |
-          cp index.html _site/index.html
-          touch _site/.nojekyll
-
-      - uses: actions/configure-pages@v5
+          cp index.html site/
+          if [ -f settings.json ]; then cp settings.json site/; fi
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: site
 
       - id: deployment
         uses: actions/deploy-pages@v4
