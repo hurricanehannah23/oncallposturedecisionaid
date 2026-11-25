@@ -70,11 +70,22 @@ def main(out):
     for n in (4, 5, 6, 7, 8):
         save(f"spc_day{n}.json", lambda n=n: get(f"https://www.spc.noaa.gov/products/exper/day4-8/day{n}prob.lyr.geojson"))
 
-    for s in SITES:   # GFS winds at 262 ft (80 m) and 394 ft (120 m) for the Winds aloft row
+    for s in SITES:   # GFS winds at 262, 328 and 394 ft (80, 100, 120 m) for the Winds aloft row
         save(f"aloft_{s['id']}.json", lambda s=s: get(
-            f"https://api.open-meteo.com/v1/gfs?latitude={s['lat']}&longitude={s['lon']}"
-            "&hourly=wind_speed_10m,wind_gusts_10m,wind_speed_80m,wind_direction_80m,wind_speed_120m,wind_direction_120m"
-            "&wind_speed_unit=kn&timezone=GMT&forecast_days=8"))
+            f"https://api.open-meteo.com/v1/forecast?latitude={s['lat']}&longitude={s['lon']}"
+            "&hourly=wind_speed_10m,wind_gusts_10m,wind_speed_80m,wind_direction_80m,wind_speed_100m,wind_direction_100m,wind_speed_120m,wind_direction_120m"
+            "&wind_speed_unit=kn&timezone=GMT&forecast_days=8&models=gfs_seamless"))
+
+    # Wind Analysis tab (same as METCON): 3 sites x 3 models
+    wn_sites = {"cape": (28.4884, -80.5778), "lc39": (28.6080, -80.6040), "pat": (28.2350, -80.6100)}
+    wn_models = {"gfs": "gfs_seamless", "hrrr": "ncep_hrrr_conus", "ecmwf": "ecmwf_ifs025"}
+    wn_vars = ("wind_speed_120m,wind_speed_100m,wind_speed_80m,wind_speed_10m,"
+               "wind_direction_120m,wind_direction_100m,wind_direction_80m,wind_direction_10m,wind_gusts_10m,is_day")
+    for sk, (la, lo) in wn_sites.items():
+        for mk, mv in wn_models.items():
+            save(f"wn_{sk}_{mk}.json", lambda la=la, lo=lo, mv=mv: get(
+                f"https://api.open-meteo.com/v1/forecast?latitude={la}&longitude={lo}&hourly={wn_vars}"
+                f"&wind_speed_unit=kn&timezone=GMT&forecast_days=5&models={mv}"))
 
     # launch schedule for Cape Canaveral SFS (12) and KSC (27), same feed as the ops dashboard
     save("launches.json", lambda: get("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=15"))
