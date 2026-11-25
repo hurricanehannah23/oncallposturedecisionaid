@@ -118,13 +118,13 @@ td.ncell input:focus{outline:none;border-bottom-color:var(--accent)}
 .dcard .why{font-size:12px;color:var(--muted)}
 
 /* hourly timing */
-.tlwrap{position:relative;overflow-x:auto;padding:10px 14px 12px}
+.tlwrap{position:relative;overflow-x:auto;overflow-y:visible;padding:10px 14px 12px}
 .tl{display:grid;gap:3px;min-width:calc(150px + var(--n) * 7px)}
 .tlrow{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:8px}
 .tllab{all:unset;font:600 12px/1.2 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right;cursor:pointer}
 button.tllab:hover{color:var(--accent)} button.tllab:focus-visible{outline:2px solid var(--accent)}
 div.tllab{cursor:default}
-.tlcells{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:1px;height:26px}
+.tlcells{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:1px;height:34px}
 .tlhead .tlcells,.tlticks .tlcells{height:auto}
 .tlday{font:600 12px/1.4 var(--f-ui);color:var(--fg);border-left:1px solid var(--line2);padding-left:6px;white-space:nowrap;overflow:hidden}
 .tlticks span{font:10px var(--f-mono);color:var(--dim);border-left:1px solid var(--line);padding-left:2px}
@@ -132,7 +132,7 @@ div.tllab{cursor:default}
 .tc.v0{background:#1a2328} .tc.v1{background:#2f8a63} .tc.v2{background:#f0c24a} .tc.v3{background:#ff5161} .tc.vna{background:repeating-linear-gradient(45deg,#1a2328 0 3px,transparent 3px 6px)}
 .tc.d0{box-shadow:-2px 0 0 var(--bg)}
 .tc:hover{outline:2px solid #fff;outline-offset:0;position:relative;z-index:1}
-.tlpost{margin-top:6px} .tlpost .tllab{color:var(--accent)} .tlpost .tlcells{height:30px}
+.tlpost{margin-top:6px} .tlpost .tllab{color:var(--accent)} .tlpost .tlcells{height:38px}
 .tlsum{display:grid;gap:4px;margin-top:12px;font-size:13px;color:var(--muted)} .tlsum b{color:var(--fg);font-weight:600}
 @media (max-width:640px){.tlrow{grid-template-columns:96px minmax(0,1fr)} .tl{min-width:calc(96px + var(--n) * 7px)} .tllab{font-size:11px}}
 
@@ -842,7 +842,9 @@ function timing(el, threats, opts={}){
     const cells=document.createElement("div"); cells.className="tlcells";
     hrs.forEach((t,ix)=>{ const x=row.f(t); const c=document.createElement("i"); c.className="tc "+(x.lvl==null?"vna":"v"+x.lvl)+(hourOf(t)===0&&ix?" d0":"");
       c.onpointerenter=ev=>{ tip.textContent=""; const a=document.createElement("div"); a.className="tt"; a.textContent=fFull.format(new Date(t)); const b=document.createElement("div"); b.textContent=row.name+": "+(x.lvl==null?"no data": row.id==="posture"? x.val : row.id==="launch"? (x.lvl? "launch window" : "none") : LVL[x.lvl]); b.style.fontWeight="600"; const cc=document.createElement("div"); cc.style.color="var(--muted)"; cc.textContent= row.id==="posture"||(row.id==="launch"&&!x.lvl)?"":x.val; tip.append(a,b,cc); tip.hidden=false;
-        const wr=el.getBoundingClientRect(), cr=c.getBoundingClientRect(); let left=cr.left-wr.left+el.scrollLeft+10; if(left+200>el.clientWidth+el.scrollLeft) left=Math.max(4,left-210); tip.style.left=left+"px"; tip.style.top=(cr.bottom-wr.top+6)+"px"; };
+        const wr=el.getBoundingClientRect(), cr=c.getBoundingClientRect(); let left=cr.left-wr.left+el.scrollLeft+10; if(left+200>el.clientWidth+el.scrollLeft) left=Math.max(4,left-210); tip.style.left=left+"px";
+        const th=tip.offsetHeight, below=cr.bottom-wr.top+6, above=cr.top-wr.top-th-6;
+        tip.style.top=(below+th<=el.clientHeight || above<0 ? (below+th<=el.clientHeight? below : Math.max(0, el.clientHeight-th-2)) : above)+"px"; };
       c.onpointerleave=()=>{ tip.hidden=true; };
       cells.append(c); });
     r.append(lab,cells); wrap.append(r); }
