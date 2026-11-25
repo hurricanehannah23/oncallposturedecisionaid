@@ -76,6 +76,9 @@ def main(out):
             "&hourly=wind_speed_10m,wind_gusts_10m,wind_speed_80m,wind_direction_80m,wind_speed_120m,wind_direction_120m"
             "&wind_speed_unit=kn&timezone=GMT&forecast_days=8"))
 
+    # launch schedule for Cape Canaveral SFS (12) and KSC (27), same feed as the ops dashboard
+    save("launches.json", lambda: get("https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=15"))
+
     save("nhc.json", lambda: get("https://www.nhc.noaa.gov/CurrentStorms.json"))
 
     def afd():
