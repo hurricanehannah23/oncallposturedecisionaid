@@ -136,6 +136,50 @@ div.tllab{cursor:default}
 .tlsum{display:grid;gap:4px;margin-top:12px;font-size:13px;color:var(--muted)} .tlsum b{color:var(--fg);font-weight:600}
 @media (max-width:640px){.tlrow{grid-template-columns:96px minmax(0,1fr)} .tl{min-width:calc(96px + var(--n) * 7px)} .tllab{font-size:11px}}
 
+/* summary, launches, print */
+.sumgrid{display:grid;gap:10px}
+#sumText{width:100%;resize:vertical;background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:10px 12px;font:13px/1.5 var(--f-mono);color:var(--fg)}
+.rem{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.rem input{background:var(--bg);border:1px solid var(--line2);border-radius:6px;padding:6px 8px;font-size:13px}
+#copyState{color:var(--ok)}
+.cell.vln{background:#1e3a5c;border-color:#6cb6ff;color:#dcecff}
+.tc.vln{background:#6cb6ff}
+tr.lrow th.rh{color:var(--info);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:13px}
+.item.ln{border-left-color:var(--info)}
+.vlaunch{margin-top:6px;padding:6px 10px;border-radius:6px;background:#1e3a5c;color:#dcecff;font-size:13px}
+.pstamp{display:none}
+#sumPrint{display:none}
+@media print{
+  @page{size:landscape;margin:.3in}
+  :root{--bg:#fff;--panel:#fff;--raised:#f2f4f5;--line:#d5dadd;--line2:#b9c1c6;--fg:#0b1114;--muted:#45535b;--dim:#6b7880;color-scheme:light}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html,body{background:#fff;color:#0b1114}
+  body{padding:0;font-size:10px}
+  .win,#btnRefresh,.chips,.notice,.tabs,.ph .btn,#btnOvClear,.mxlegend span:last-child,.rem,td.ncell,table.mx thead th:last-child,#rulesCard,#perCard,#alCard,.pane:not(#pane-ov),.tip,#copyState,#sumText,.verdict .vw>div:first-child,.verdict .vw ul,.vnote,.tlsum,.upd{display:none!important}
+  header{padding:0 0 3px;gap:2px 12px} .brand h1{font-size:16px} .brand .sub{font-size:9px}
+  .pstamp{display:block;margin-left:auto;font:10px var(--f-mono);color:var(--muted)}
+  .verdict{padding:5px 12px;background:#fff!important;border:1px solid var(--line2);grid-template-columns:auto minmax(0,1fr);gap:2px 14px}
+  .verdict .vq{font-size:9px} .verdict .va{font-size:20px}
+  .vlaunch{margin:0;padding:3px 8px;background:#e3efff;color:#0b1114;font-size:10px}
+  .pane{margin-top:6px;gap:6px;display:grid!important}
+  #sumCard{grid-column:span 4} #mxCard{grid-column:span 8} #tlCard{grid-column:span 8} #lnCard{grid-column:span 4}
+  section.panel{border:1px solid var(--line);break-inside:auto}
+  .ph{padding:3px 8px} .ph h2{font-size:9px} .ph .meta{font-size:8.5px} .pb{padding:5px 8px}
+  #sumPrint{display:block;margin:0;font:9.5px/1.4 var(--f-mono);white-space:pre-wrap;word-break:break-word;color:#0b1114}
+  table.mx{min-width:0;border-spacing:3px} table.mx thead th{font-size:8.5px;padding:1px 2px} table.mx thead th .dl{font-size:8.5px}
+  .cell{min-width:0;min-height:25px;padding:2px 4px;gap:0} .cell .cl{font-size:10px} .cell .cv{font-size:7.5px;line-height:1.15}
+  .cell.vd{min-height:24px}
+  .cell.v0,.cell.vna{color:#6b7880} .cell.v0 .cl{color:#45535b}
+  table.mx th.rh{width:84px} table.mx th.rh button,tr.lrow th.rh,tr.vrow th.rh{font-size:8.5px;letter-spacing:.04em}
+  td.acell{min-width:0;max-width:110px} td.acell .none{font-size:8px} .achip{background:#f2f4f5;padding:2px 5px;font-size:8.5px} .achip span{font-size:8px}
+  .mxlegend{display:none!important}
+  .tlwrap{overflow:visible;padding:4px 8px} .tl{min-width:0;gap:2px} .tlrow{grid-template-columns:84px minmax(0,1fr);gap:5px}
+  .tlcells{height:9px} .tlpost .tlcells{height:11px} .tlpost{margin-top:3px} .tllab{font-size:7.5px;color:#45535b;letter-spacing:.02em}
+  .tlday{font-size:8.5px} .tlticks span{font-size:7px}
+  .tc.v0{background:#e9edef} .tc.vna{background:repeating-linear-gradient(45deg,#e9edef 0 3px,#fff 3px 6px)}
+  .list{padding:4px 8px;gap:4px} .item{padding:3px 6px} .item .ih b{font-size:10px} .item .ib{font-size:9px}
+}
+
 /* charts */
 .chart{position:relative;padding:8px 8px 4px}
 .chart svg{display:block;width:100%}
@@ -191,6 +235,7 @@ td.l1{color:var(--warn);font-weight:600} td.l2{color:var(--crit);font-weight:700
   </div>
   <button type="button" class="btn" id="btnRefresh">Refresh</button>
   <span class="upd" id="upd">--</span>
+  <span class="pstamp" id="printStamp"></span>
 </header>
 
 <div class="verdict" id="verdict"><span class="vq">Recommended posture</span><span class="va" id="vAns">Loading…</span><div class="vw" id="vWhy"></div></div>
@@ -209,6 +254,15 @@ td.l1{color:var(--warn);font-weight:600} td.l2{color:var(--crit);font-weight:700
 </nav>
 
 <div class="pane on" id="pane-ov" role="tabpanel" aria-labelledby="tab-ov">
+  <section class="panel" id="sumCard">
+    <div class="ph"><h2>Leadership summary</h2><span class="meta" id="copyState" role="status"></span>
+      <button type="button" class="btn sm" id="btnCopy">Copy</button><button type="button" class="btn sm" id="btnPrint">Print brief</button></div>
+    <div class="pb sumgrid">
+      <textarea id="sumText" readonly aria-label="Leadership summary text" spellcheck="false"></textarea>
+      <pre id="sumPrint" aria-hidden="true"></pre>
+      <label class="rem">Remarks to add <input type="text" id="sumRemarks" placeholder="e.g. Recall time 60 min; on call: SSgt Smith"></label>
+    </div>
+  </section>
   <section class="panel" id="mxCard">
     <div class="ph"><h2>Threat matrix</h2><span class="meta" id="mxMeta"></span><button type="button" class="btn sm" id="btnOvClear">Hand all cells back to the data</button></div>
     <div class="mxwrap"><table class="mx" id="mx"></table></div>
@@ -216,8 +270,9 @@ td.l1{color:var(--warn);font-weight:600} td.l2{color:var(--crit);font-weight:700
       <span>Filled from data as a first guess. Click a cell to raise it, Shift-click to lower it (✎ = yours; right-click to hand it back to the data). Posture: High → stay staffed, Moderate → on call (heightened), Low/None → on call.</span></div>
   </section>
   <section class="panel" id="tlCard"><div class="ph"><h2>Hourly timing</h2><span class="meta">same thresholds, hour by hour · hover for values · click a threat for its tab</span></div><div class="tlwrap" id="tlAll"></div></section>
-  <section class="panel half"><div class="ph"><h2>NWS forecast · Kennedy</h2><span class="meta" id="perMeta"></span></div><div class="periods" id="periods"><div class="empty">Loading…</div></div></section>
-  <section class="panel half"><div class="ph"><h2>Active NWS alerts</h2><span class="meta" id="alMeta"></span></div><div class="list" id="alerts"><div class="empty">Loading…</div></div></section>
+  <section class="panel half" id="perCard"><div class="ph"><h2>NWS forecast · Kennedy</h2><span class="meta" id="perMeta"></span></div><div class="periods" id="periods"><div class="empty">Loading…</div></div></section>
+  <section class="panel" id="lnCard"><div class="ph"><h2>Launches in window</h2><span class="meta" id="lnMeta"></span></div><div class="list" id="launches"><div class="empty">Loading…</div></div></section>
+  <section class="panel half" id="alCard"><div class="ph"><h2>Active NWS alerts</h2><span class="meta" id="alMeta"></span></div><div class="list" id="alerts"><div class="empty">Loading…</div></div></section>
   <section class="panel" id="rulesCard">
     <div class="ph"><h2>How it's scored</h2><span class="meta">same as the METCON threat matrix · worse of Kennedy and the Cape</span></div>
     <ul class="howto">
@@ -379,8 +434,8 @@ async function getJSON(url){
 }
 
 /* ---------------- Source status ---------------- */
-const SRC = {}; const SRC_ORDER = ["grid","fcst","aloft","alerts","spc","nhc","afd"];
-const SRC_NAME = {grid:"NWS grid", fcst:"NWS forecast", aloft:"GFS winds aloft", alerts:"NWS alerts", spc:"SPC outlooks", nhc:"NHC storms", afd:"MLB discussion"};
+const SRC = {}; const SRC_ORDER = ["grid","fcst","aloft","alerts","spc","nhc","launch","afd"];
+const SRC_NAME = {grid:"NWS grid", fcst:"NWS forecast", aloft:"GFS winds aloft", launch:"Launch schedule", alerts:"NWS alerts", spc:"SPC outlooks", nhc:"NHC storms", afd:"MLB discussion"};
 function setSrc(k, st, msg, t){ SRC[k]={st, msg:msg||"", t:t||Date.now()}; renderChips(); }
 
 /* ---------------- Site data (GitHub Pages) ----------------
@@ -431,7 +486,7 @@ $("#btnThx").onclick=()=>setWin(thanksgivingWindow());
 $("#btnThx").hidden=!thanksgivingWindow();
 
 /* ---------------- Data store ---------------- */
-const D = { grid:{}, aloft:{}, periods:null, alerts:[], spc:[], nhc:null, afd:null };
+const D = { grid:{}, aloft:{}, launches:null, periods:null, alerts:[], spc:[], nhc:null, afd:null };
 
 function durH(s){ const m=/P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?)?/.exec(s||""); if(!m) return 1; return Math.max(1,(+m[1]||0)*24+(+m[2]||0)+((+m[3]||0)>=30?1:0)); }
 function expand(field, conv){ const m=new Map(); if(!field||!Array.isArray(field.values)) return m; const u=field.uom||"";
@@ -595,10 +650,11 @@ const POSTURE = ["On call","On call","On call: heightened","Stay staffed"];
 function renderAll(){
   const days=windowDays(); MX={};
   for(const th of THREATS){ MX[th.id]={}; for(const k of days) MX[th.id][k]=rate(th.id,k); }
-  renderVerdict(days); renderMatrix(days); renderTabs(days); renderPeriods(days); renderAlerts();
+  renderVerdict(days); renderMatrix(days); renderTabs(days); renderPeriods(days); renderAlerts(); renderLaunches(days);
   for(const th of THREATS) TAB[th.id](days);
   timing($("#tlAll"), THREATS.map(t=>t.id), {posture:true});
   for(const th of THREATS) timing($("#"+th.id+"Tl"), [th.id]);
+  renderSummary(days);
 }
 function dayLevel(k){ const w=worst(...THREATS.map(t=>MX[t.id][k].lvl));
   if(w!==3 && ["ltg","wind","temp"].some(id=>MX[id][k].lvl==null)) return null;   // no call without the NWS grid
@@ -618,6 +674,7 @@ function renderVerdict(days){
     : lv===2 ? "Nothing reaches High, but watch these closely while on call:" : "At least one threat reaches High:";
   w.append(lead);
   if(items.length){ const ul=document.createElement("ul"); for(const s of items.slice(0,6)){ const li=document.createElement("li"); li.textContent=s; ul.append(li); } if(items.length>6){ const li=document.createElement("li"); li.textContent=`+${items.length-6} more in the matrix`; ul.append(li); } w.append(ul); }
+  const lw=launchesIn(days); if(lw.length){ const n=document.createElement("div"); n.className="vlaunch"; n.textContent=`🚀 ${lw.length} launch${lw.length>1?"es":""} in window: `+lw.map(L=>`${lVeh(L)} NET ${fZ(lNet(L))}`).join("; ")+". Launch support staffing is separate from this posture."; w.append(n); }
   if(days.some(k=>["ltg","wind","temp"].some(id=>MX[id][k].lvl==null))){ const n=document.createElement("div"); n.className="vnote"; n.textContent="Some cells have no data yet. Check them before you decide."; w.append(n); }
 }
 function setOv(threat, k, lvl){ const key=threat+"|"+k; if(lvl==null) delete OV[key]; else OV[key]=lvl; lsSet("ov",OV); renderAll(); }
@@ -650,6 +707,11 @@ function renderMatrix(days){
     const tn=document.createElement("td"); tn.className="ncell"; const inp=document.createElement("input"); inp.type="text"; inp.value=NOTES[th.id]||""; inp.setAttribute("aria-label",th.name+" notes"); inp.placeholder="";
     inp.onchange=()=>{ if(inp.value.trim()) NOTES[th.id]=inp.value; else delete NOTES[th.id]; lsSet("notes",NOTES); }; tn.append(inp); tr.append(tn);
     tb.append(tr); }
+  { const lr=document.createElement("tr"); lr.className="lrow"; const lh=document.createElement("th"); lh.className="rh"; lh.scope="row"; lh.textContent="Launches"; lr.append(lh);
+    for(const k of days){ const td=document.createElement("td"); const c=document.createElement("div"); const ls=launchesOn(k); c.className="cell vd "+(ls.length?"vln":"v0");
+      const l=document.createElement("span"); l.className="cl"; l.textContent= !D.launches? "—" : ls.length? (ls.length>1? ls.length+" launches" : "Launch") : "None";
+      const vv=document.createElement("span"); vv.className="cv"; vv.textContent= ls.map(L=>`${lVeh(L)} ${fZ(lNet(L)).slice(-5)}`).join(" · ") || (D.launches? "none listed" : "loading"); c.append(l,vv); td.append(c); lr.append(td); }
+    const lt=document.createElement("td"); lt.className="acell"; const sp=document.createElement("span"); sp.className="none"; sp.textContent="not scored · staffing set separately"; lt.append(sp); lr.append(lt, document.createElement("td")); tb.append(lr); }
   const vr=document.createElement("tr"); vr.className="vrow"; const vh=document.createElement("th"); vh.className="rh"; vh.scope="row"; vh.textContent="Posture"; vr.append(vh);
   for(const k of days){ const lv=dayLevel(k); const td=document.createElement("td"); const c=document.createElement("div"); c.className="cell vd "+(lv==null?"vna": lv>=3?"v3": lv===2?"v2":"vok");
     const l=document.createElement("span"); l.className="cl"; l.textContent= lv==null?"—": POSTURE[lv];
@@ -740,12 +802,13 @@ function timing(el, threats, opts={}){
   const tc=document.createElement("div"); tc.className="tlcells"; hrs.forEach((t,ix)=>{ const h=hourOf(t); if(h%6===0){ const s=document.createElement("span"); s.style.gridColumn=`${ix+1} / span 6`; s.textContent= h===0?"12a": h===12?"12p": h<12? h+"a" : (h-12)+"p"; tc.append(s); } });
   tk.append(tc); wrap.append(tk);
   const rows = threats.map(id=>({id, name:THREATS.find(x=>x.id===id).name, f:t=>hourLevel(id,t)}));
+  if(opts.posture && D.launches) rows.push({id:"launch", name:"Launches", f:t=>{ const ls=D.launches.filter(L=>{ const [s,e]=lSpan(L); return s<t+H && e>t; }); return {lvl: ls.length? "ln" : 0, val: ls.map(L=>`${lVeh(L)} · NET ${fZ(lNet(L))}`).join("; ") || "no launch"}; }});
   if(opts.posture) rows.push({id:"posture", name:"Posture", f:t=>{ const l=postureHour(t); return {lvl:l==null?null: l>=3?3: l===2?2: 1, val: l==null?"waiting for data": POSTURE[l]}; }});
   for(const row of rows){ const r=document.createElement("div"); r.className="tlrow"+(row.id==="posture"?" tlpost":"");
-    const lab=document.createElement(row.id==="posture"?"div":"button"); lab.className="tllab"; lab.textContent=row.name; if(row.id!=="posture"){ lab.type="button"; lab.onclick=()=>go(row.id); lab.title="Open the "+row.name+" tab"; }
+    const lab=document.createElement(row.id==="posture"||row.id==="launch"?"div":"button"); lab.className="tllab"; lab.textContent=row.name; if(row.id!=="posture"&&row.id!=="launch"){ lab.type="button"; lab.onclick=()=>go(row.id); lab.title="Open the "+row.name+" tab"; }
     const cells=document.createElement("div"); cells.className="tlcells";
     hrs.forEach((t,ix)=>{ const x=row.f(t); const c=document.createElement("i"); c.className="tc "+(x.lvl==null?"vna":"v"+x.lvl)+(hourOf(t)===0&&ix?" d0":"");
-      c.onpointerenter=ev=>{ tip.textContent=""; const a=document.createElement("div"); a.className="tt"; a.textContent=fFull.format(new Date(t)); const b=document.createElement("div"); b.textContent=row.name+": "+(x.lvl==null?"no data": row.id==="posture"? x.val : LVL[x.lvl]); b.style.fontWeight="600"; const cc=document.createElement("div"); cc.style.color="var(--muted)"; cc.textContent= row.id==="posture"?"":x.val; tip.append(a,b,cc); tip.hidden=false;
+      c.onpointerenter=ev=>{ tip.textContent=""; const a=document.createElement("div"); a.className="tt"; a.textContent=fFull.format(new Date(t)); const b=document.createElement("div"); b.textContent=row.name+": "+(x.lvl==null?"no data": row.id==="posture"? x.val : row.id==="launch"? (x.lvl? "launch window" : "none") : LVL[x.lvl]); b.style.fontWeight="600"; const cc=document.createElement("div"); cc.style.color="var(--muted)"; cc.textContent= row.id==="posture"||(row.id==="launch"&&!x.lvl)?"":x.val; tip.append(a,b,cc); tip.hidden=false;
         const wr=el.getBoundingClientRect(), cr=c.getBoundingClientRect(); let left=cr.left-wr.left+el.scrollLeft+10; if(left+200>el.clientWidth+el.scrollLeft) left=Math.max(4,left-210); tip.style.left=left+"px"; tip.style.top=(cr.bottom-wr.top+6)+"px"; };
       c.onpointerleave=()=>{ tip.hidden=true; };
       cells.append(c); });
@@ -758,6 +821,74 @@ function timing(el, threats, opts={}){
   if(!any){ const p=document.createElement("div"); p.textContent="No hour reaches Moderate in this window."; sum.append(p); }
   el.append(sum);
 }
+
+/* ---------------- Launches ---------------- */
+const LL_URL = "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?location__ids=12,27&limit=15";   // Cape Canaveral SFS and KSC, same feed as the ops dashboard
+async function loadLaunches(){ setSrc("launch","load");
+  try{ const j=await siteOr("launches.json", ()=>getJSON(LL_URL)); D.launches=(Array.isArray(j)? j : j.results||[]); setSrc("launch","ok","",siteT("launches.json")); }
+  catch(e){ setSrc("launch","err",e.message); } }
+const lNet = L => Date.parse(L.net);
+const lSpan = L => { const n=lNet(L); const s=Date.parse(L.window_start||L.net), e=Date.parse(L.window_end||L.net); return [isNaN(s)?n:s, isNaN(e)||e<=s? (isNaN(s)?n:s)+H : e]; };
+const lVeh = L => (L.rocket&&L.rocket.configuration&&(L.rocket.configuration.full_name||L.rocket.configuration.name)) || String(L.name||"").split("|")[0].trim();
+const lMis = L => (L.mission&&L.mission.name) || (String(L.name||"").split("|")[1]||"").trim();
+const lPad = L => (L.pad&&(L.pad.name||L.pad)) || "";
+const lSt  = L => (L.status&&(L.status.abbrev||L.status.name)) || "";
+const fZ = t => { const d=new Date(t); return `${pad(d.getUTCDate())} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()]} ${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}Z`; };
+const fL = new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"short",hour:"numeric",minute:"2-digit"});
+function launchesIn(days){ if(!D.launches||!days.length) return []; const a=hoursFor(days[0])[0], b=hoursFor(days[days.length-1]).slice(-1)[0]+H;
+  return D.launches.filter(L=>{ const [s,e]=lSpan(L); return s<b && e>a; }).sort((x,y)=>lNet(x)-lNet(y)); }
+const launchesOn = k => launchesIn([k]);
+function renderLaunches(days){ const el=$("#launches"); el.textContent="";
+  if(!D.launches){ el.innerHTML='<div class="empty">'+(SRC.launch&&SRC.launch.st==="err"?"Couldn't load the launch schedule.":"Loading…")+'</div>'; return; }
+  const ls=launchesIn(days); $("#lnMeta").textContent = "The Space Devs Launch Library · "+(ls.length? ls.length+" in window" : "none in window");
+  if(!ls.length){ el.innerHTML='<div class="empty">No launches listed for the Cape or KSC in this window.</div>'; return; }
+  for(const L of ls){ const it=document.createElement("div"); it.className="item ln"; const h=document.createElement("div"); h.className="ih";
+    const b=document.createElement("b"); b.textContent=lVeh(L)+(lMis(L)? " · "+lMis(L) : ""); const em=document.createElement("em"); em.textContent=lSt(L); h.append(b,em);
+    const ib=document.createElement("div"); ib.className="ib"; const [s,e]=lSpan(L);
+    ib.textContent=`NET ${fZ(lNet(L))} (${fL.format(new Date(lNet(L)))} ET)`+(e-s>H? ` · window ${fZ(s).slice(-5)}–${fZ(e).slice(-5)}` : "")+(lPad(L)? " · "+lPad(L) : "");
+    it.append(h,ib); el.append(it); } }
+
+/* ---------------- Leadership summary ---------------- */
+let REMARKS = lsGet("remarks") || "";
+const lvName = l => ["None","Low","Moderate","High"][l];
+function summaryText(days){
+  if(!days.length) return "";
+  const lv=worst(...days.map(dayLevel)); const posture = lv==null? "Pending data" : lv>=3? "Stay staffed" : lv===2? "On call: heightened" : "On call";
+  const now=Math.floor(Date.now()/H)*H, hrs=allHrs().filter(t=>t>=now);
+  const lines=[];
+  lines.push(`ON-CALL POSTURE: ${posture.toUpperCase()}`);
+  lines.push(`Window: ${keyLabel(days[0])} – ${keyLabel(days[days.length-1])} · KSC & CCSFS`);
+  const drivers=[];
+  for(const th of THREATS){ const ws=windowsOf(th.id,hrs); const ovs=days.filter(k=>MX[th.id][k].ov && MX[th.id][k].lvl>=2);
+    if(ws.length) drivers.push(`${th.name}: `+ws.map(w=>`${w.min===w.max? lvName(w.max) : "Moderate to High"} ${fTm.format(new Date(w.start))} – ${fTm.format(new Date(w.end))}`).join("; "));
+    else { const dl=days.filter(k=>MX[th.id][k].lvl>=2); if(dl.length) drivers.push(`${th.name}: ${dl.map(k=>lvName(MX[th.id][k].lvl)+" "+keyLabel(k)).join("; ")}`); }
+    for(const k of ovs) drivers.push(`${th.name}: set to ${lvName(MX[th.id][k].lvl)} on ${keyLabel(k)} by the forecaster`); }
+  if(drivers.length){ lines.push("Drivers:"); for(const d of [...new Set(drivers)]) lines.push("  • "+d); }
+  const quiet=THREATS.filter(th=>days.every(k=>MX[th.id][k].lvl!=null && MX[th.id][k].lvl<=1)).map(th=>th.name);
+  if(quiet.length) lines.push(`Low or none: ${quiet.join(", ")}.`);
+  const pend=THREATS.filter(th=>days.some(k=>MX[th.id][k].lvl==null) && days.every(k=>(MX[th.id][k].lvl??0)<=1)).map(th=>`${th.name} (${days.filter(k=>MX[th.id][k].lvl==null).map(keyLabel).join(", ")}: ${th.id==="svr"?"not outlooked yet":"no data yet"})`);
+  if(pend.length) lines.push(`Pending: ${pend.join("; ")}.`);
+  const ls=launchesIn(days);
+  if(ls.length){ lines.push("Launches in window (launch support staffing is separate from this posture):"); for(const L of ls) lines.push(`  • ${lVeh(L)}${lMis(L)? " · "+lMis(L):""}, NET ${fZ(lNet(L))} (${fL.format(new Date(lNet(L)))} ET)${lPad(L)? ", "+lPad(L):""}${lSt(L)? " ["+lSt(L)+"]":""}`); }
+  else if(D.launches) lines.push("Launches in window: none listed for the Cape or KSC.");
+  const notes=THREATS.filter(th=>NOTES[th.id]).map(th=>`${th.name}: ${NOTES[th.id]}`);
+  if(notes.length){ lines.push("Forecaster notes:"); for(const n of notes) lines.push("  • "+n); }
+  if(REMARKS.trim()) lines.push("Remarks: "+REMARKS.trim());
+  const dt=Math.min(...["grid","alerts","spc"].map(k=>SRC[k]&&SRC[k].st==="ok"? SRC[k].t : Infinity));
+  lines.push(`Data: NWS, SPC, NHC, GFS${Number.isFinite(dt)? " as of "+fZ(dt) : ""}. On-Call Posture Decision Aid, 45 WS.`);
+  return lines.join("\n"); }
+function renderSummary(days){ const box=$("#sumText"); const txt=summaryText(days); box.value=txt; $("#sumPrint").textContent=txt; box.rows=Math.min(18, Math.max(6, txt.split("\n").length+1)); }
+$("#sumRemarks").value=REMARKS;
+$("#sumRemarks").oninput=e=>{ REMARKS=e.target.value; lsSet("remarks",REMARKS||null); renderSummary(windowDays()); };
+$("#btnCopy").onclick=async()=>{ const box=$("#sumText"), s=$("#copyState");
+  try{ await navigator.clipboard.writeText(box.value); s.textContent="Copied"; }
+  catch(e){ box.focus(); box.select(); s.textContent="Press Ctrl+C / ⌘C to copy"; }
+  setTimeout(()=>{ s.textContent=""; }, 4000); };
+// print: works on GitHub Pages and in a normal browser tab; the Claude app's frame blocks printing
+const CAN_PRINT = !(window.claude && typeof window.claude.use==="function");
+$("#btnPrint").onclick=()=>{ if(!CAN_PRINT){ $("#copyState").textContent="Printing isn't available inside the Claude app. Open the GitHub Pages version to print."; return; }
+  const was=document.querySelector(".tab[aria-selected=true]")?.dataset.tab||"ov"; if(was!=="ov") go("ov");
+  $("#printStamp").textContent="Printed "+fFull.format(new Date())+" ET"; setTimeout(()=>window.print(), 50); };
 
 /* ---------------- Chart ---------------- */
 function chart(wrap, legendEl, cfg){
@@ -950,7 +1081,7 @@ let loading=false;
 async function refresh(){ if(loading) return; loading=true; $("#btnRefresh").disabled=true; SITE.p=null; SITE.meta=null; SITE.used={};
   try{
     const g=loadGrid().then(renderAll);
-    const rest=[loadAloft(), loadAlerts(), loadSPC(), loadNHC(), loadAFD()].map(p=>p.then(renderAll));
+    const rest=[loadAloft(), loadAlerts(), loadSPC(), loadNHC(), loadLaunches(), loadAFD()].map(p=>p.then(renderAll));
     await g; await loadForecast(); renderAll(); await Promise.allSettled(rest);
     $("#upd").textContent = SITE.meta ? "Site data from "+hhZ(SITE.meta.t)+" · checked "+hhZ(Date.now()) : "Updated "+hhZ(Date.now());
   } finally { loading=false; $("#btnRefresh").disabled=false; renderAll(); } }
